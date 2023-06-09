@@ -16,6 +16,7 @@ function App() {
     DEFAULT_API_RESULTS_STATE
   )
   const [selectedUser, setSelectedUser] = useState<string | null>(null)
+  const [lastSearchedQuery, setLastSearchedQuery] = useState('')
 
   const searchUsers = useCallback(
     async (query: string) => {
@@ -34,6 +35,7 @@ function App() {
         setSearchResults(DEFAULT_API_RESULTS_STATE)
       } finally {
         setSearchResults((prevState) => ({ ...prevState, isLoading: false }))
+        setLastSearchedQuery(query)
         if (isFirstSearch) {
           setIsFirstSearch(false)
         }
@@ -56,6 +58,13 @@ function App() {
     }
   }, [searchQuery, searchUsers])
 
+  const UserShimmer = () => (
+    <div className='bg-gray-100 py-4 px-2 animate-pulse w-full grid items-center grid-cols-[auto_32px]'>
+      <p className='rounded h-4 w-1/2 bg-gray-400' />
+      <p className='rounded h-4 w-full bg-gray-400' />
+    </div>
+  )
+
   return (
     <main className='w-full max-w-[480px] p-4'>
       <input
@@ -73,14 +82,21 @@ function App() {
         Search
       </button>
       {searchResults.isLoading ? (
-        <p>Loading...</p>
+        <>
+          <div className='mt-4 animate-pulse rounded h-4 w-1/2 bg-gray-400' />
+          <div className='mt-4 grid grid-flow-row gap-y-2'>
+            <UserShimmer />
+            <UserShimmer />
+            <UserShimmer />
+          </div>
+        </>
       ) : searchResults.error ? (
         <p>{searchResults.error}</p>
       ) : searchResults.data.length === 0 && !isFirstSearch ? (
         <p>No results found</p>
       ) : searchResults.data.length > 0 ? (
         <>
-          <p className='mt-4'>Showing users for {`“${searchQuery}”`}</p>
+          <p className='mt-4'>Showing users for {`“${lastSearchedQuery}”`}</p>
           <ul className='mt-4 grid grid-flow-row gap-y-2'>
             {searchResults.data.map((user) => (
               <UserRow

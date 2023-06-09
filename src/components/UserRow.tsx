@@ -47,6 +47,16 @@ function UserRow({ username, isExpanded, onClick }: UserRowProps) {
     }
   }, [username, isExpanded, isFirstExpanded])
 
+  const RepoShimmer = () => (
+    <li className='bg-gray-200 animate-pulse grid grid-cols-[auto_64px] p-2'>
+      <div>
+        <p className='rounded h-4 w-1/2 bg-gray-400'></p>
+        <p className='rounded h-4 mt-2 w-3/4 bg-gray-400'></p>
+      </div>
+      <p className='rounded h-4 w-full bg-gray-400'></p>
+    </li>
+  )
+
   return (
     <li>
       <button
@@ -60,13 +70,9 @@ function UserRow({ username, isExpanded, onClick }: UserRowProps) {
         <>
           {repos.isLoading ? (
             <ul className=' mt-2 pl-4 grid grid-flow-row gap-y-2'>
-              <li className='bg-gray-200 animate-pulse grid grid-cols-[auto_64px] p-2'>
-                <div>
-                  <p className='rounded h-4 w-1/2 bg-gray-400'></p>
-                  <p className='rounded h-4 mt-2 w-3/4 bg-gray-400'></p>
-                </div>
-                <p className='rounded h-4 w-full bg-gray-400'></p>
-              </li>
+              <RepoShimmer />
+              <RepoShimmer />
+              <RepoShimmer />
             </ul>
           ) : repos.error ? (
             <p>{repos.error}</p>
