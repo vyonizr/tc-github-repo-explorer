@@ -19,6 +19,7 @@ function UserRow({ username, isExpanded, onClick }: UserRowProps) {
   const [repos, setRepos] = useState<ISearchRepoResults>(
     DEFAULT_API_RESULTS_STATE
   )
+  const [isFirstExpanded, setIsFirstExpanded] = useState(true)
 
   useEffect(() => {
     const fetchRepos = async (username: string) => {
@@ -40,30 +41,46 @@ function UserRow({ username, isExpanded, onClick }: UserRowProps) {
 
     if (isExpanded) {
       fetchRepos(username)
+      if (isFirstExpanded) {
+        setIsFirstExpanded(false)
+      }
     }
-  }, [username, isExpanded])
+  }, [username, isExpanded, isFirstExpanded])
 
   return (
     <li>
-      <p onClick={onClick}>{username}</p>
+      <button
+        onClick={onClick}
+        className='bg-gray-100 p-2 w-full grid grid-cols-[auto_48px]'
+      >
+        <p className='text-left'>{username}</p>
+        <p className='text-right'>{isExpanded ? '▲' : '▼'}</p>
+      </button>
       {isExpanded ? (
         <>
           {repos.isLoading ? (
             <p>Loading...</p>
           ) : repos.error ? (
             <p>{repos.error}</p>
-          ) : repos.data.length === 0 && isExpanded ? (
+          ) : !isFirstExpanded && repos.data.length === 0 && isExpanded ? (
             <p>No results found</p>
           ) : repos.data.length > 0 && isExpanded ? (
-            <>
-              <ul>
-                {repos.data.map((repo) => (
-                  <li key={repo.id}>
-                    <p>{repo.name}</p>
-                  </li>
-                ))}
-              </ul>
-            </>
+            <ul className='mt-2 pl-4 grid grid-flow-row gap-y-2'>
+              {repos.data.map((repo) => (
+                <li
+                  key={repo.id}
+                  className='bg-gray-200 grid grid-cols-[auto_64px] p-2'
+                >
+                  <div>
+                    <p className='font-bold text-lg'>{repo.name}</p>
+                    <p>{repo.description}</p>
+                  </div>
+                  <p className='font-bold text-right'>
+                    {repo.stargazers_count + '★'}
+                  </p>
+                </li>
+              ))}
+            </ul>
           ) : null}
         </>
       ) : null}

@@ -57,15 +57,19 @@ function App() {
   }, [searchQuery, searchUsers])
 
   return (
-    <main className='w-[18.75rem]'>
+    <main className='w-full max-w-[480px] p-4'>
       <input
         type='text'
         placeholder='Enter username'
         value={searchQuery}
         onChange={(event) => setSearchQuery(event.target.value)}
-        className='block w-full'
+        className='block w-full py-2 px-4 bg-gray-100 rounded-md'
       />
-      <button onClick={() => searchUsers(searchQuery)} className='w-full'>
+      <button
+        onClick={() => searchUsers(searchQuery)}
+        className='w-full mt-4 bg-blue-500 text-white rounded-md py-2 disabled:bg-gray-300'
+        disabled={searchQuery.length === 0 || searchResults.isLoading}
+      >
         Search
       </button>
       {searchResults.isLoading ? (
@@ -76,8 +80,8 @@ function App() {
         <p>No results found</p>
       ) : searchResults.data.length > 0 ? (
         <>
-          <p>Showing users for {`"${searchQuery}"`}</p>
-          <ul>
+          <p className='mt-4'>Showing users for {`“${searchQuery}”`}</p>
+          <ul className='mt-4 grid grid-flow-row gap-y-2'>
             {searchResults.data.map((user) => (
               <UserRow
                 key={user.id}

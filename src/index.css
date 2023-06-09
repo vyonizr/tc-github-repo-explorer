@@ -5,3 +5,7 @@
 #root {
   @apply flex flex-col items-center;
 }
+
+input {
+  @apply outline-blue-500;
+}
