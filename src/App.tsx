@@ -73,11 +73,13 @@ function App() {
         value={searchQuery}
         onChange={(event) => setSearchQuery(event.target.value)}
         className='block w-full py-2 px-4 bg-gray-100 rounded-md'
+        data-testid='search-input'
       />
       <button
         onClick={() => searchUsers(searchQuery)}
         className='w-full mt-4 bg-blue-500 text-white rounded-md py-2 disabled:bg-gray-300'
         disabled={searchQuery.length === 0 || searchResults.isLoading}
+        data-testid='search-button'
       >
         Search
       </button>
