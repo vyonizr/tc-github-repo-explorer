@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+
 import { USERS_URL } from './constants'
 import type { ISearchResults, IUserEndpointResponse } from './types'
 import UserRow from './components/UserRow'
@@ -23,7 +24,11 @@ function App() {
       try {
         setSearchResults({ ...DEFAULT_API_RESULTS_STATE, isLoading: true })
         const response = await fetch(
-          `${USERS_URL}?q=${encodeURIComponent(query)}&per_page=5`
+          `${USERS_URL}?` +
+            new URLSearchParams({
+              q: encodeURIComponent(query),
+              per_page: '5',
+            })
         )
         const responseJSON: IUserEndpointResponse = await response.json()
         setSearchResults((prevState) => ({
