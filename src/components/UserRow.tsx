@@ -83,19 +83,20 @@ function UserRow({ username, isExpanded, onClick }: UserRowProps) {
               {repos.data.map((repo) => (
                 <li
                   key={repo.id}
-                  className='bg-gray-200 grid grid-cols-[auto_64px] p-2 hover:bg-gray-300 transition-colors'
+                  className='bg-gray-200 p-2 hover:bg-gray-300 transition-colors'
                 >
                   <a
                     href={repo.html_url}
                     target='_blank'
                     rel='noopener noreferrer'
+                    className='grid grid-cols-[auto_64px]'
                   >
                     <div>
                       <p className='font-bold text-lg'>{repo.name}</p>
                       <p>{repo.description}</p>
                     </div>
                     <p className='font-bold text-right'>
-                      {repo.stargazers_count + '★'}
+                      {repo.stargazers_count + ' ★'}
                     </p>
                   </a>
                 </li>
