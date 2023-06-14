@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 
 import { USERS_URL } from './constants'
 import type { ISearchResults, IUserEndpointResponse } from './types'
+import Spinner from './components/Spinner'
+import UserShimmer from './components/UserShimmer'
 import UserRow from './components/UserRow'
 
 const DEFAULT_API_RESULTS_STATE = {
@@ -22,19 +24,23 @@ function App() {
   const searchUsers = useCallback(
     async (query: string) => {
       try {
-        setSearchResults({ ...DEFAULT_API_RESULTS_STATE, isLoading: true })
-        const response = await fetch(
-          `${USERS_URL}?` +
-            new URLSearchParams({
-              q: encodeURIComponent(query),
-              per_page: '5',
-            })
-        )
-        const responseJSON: IUserEndpointResponse = await response.json()
-        setSearchResults((prevState) => ({
-          ...prevState,
-          data: responseJSON.items,
-        }))
+        if (query.length > 0) {
+          setSearchResults({ ...DEFAULT_API_RESULTS_STATE, isLoading: true })
+          const response = await fetch(
+            `${USERS_URL}?` +
+              new URLSearchParams({
+                q: encodeURIComponent(query),
+                per_page: '5',
+              })
+          )
+          const responseJSON: IUserEndpointResponse = await response.json()
+          setSearchResults((prevState) => ({
+            ...prevState,
+            data: responseJSON.items,
+          }))
+        } else {
+          setSearchResults(DEFAULT_API_RESULTS_STATE)
+        }
       } catch (error) {
         console.error(error)
         setSearchResults(DEFAULT_API_RESULTS_STATE)
@@ -63,16 +69,6 @@ function App() {
     }
   }, [searchQuery, searchUsers])
 
-  const UserShimmer = () => (
-    <div
-      className='bg-gray-100 py-4 px-2 animate-pulse w-full grid items-center grid-cols-[auto_32px]'
-      data-testid='user-shimmer'
-    >
-      <p className='rounded h-4 w-1/2 bg-gray-400' />
-      <p className='rounded h-4 w-full bg-gray-400' />
-    </div>
-  )
-
   return (
     <main className='w-full max-w-[480px] p-4'>
       <input
@@ -85,11 +81,10 @@ function App() {
       />
       <button
         onClick={() => searchUsers(searchQuery)}
-        className='w-full mt-4 bg-blue-500 text-white rounded-md py-2 disabled:bg-gray-300'
-        disabled={searchQuery.length === 0 || searchResults.isLoading}
+        className='w-full mt-4 bg-blue-500 text-white rounded-md py-2 disabled:bg-gray-300 flex justify-center'
         data-testid='search-button'
       >
-        Search
+        {searchResults.isLoading ? <Spinner /> : 'Search'}
       </button>
       {searchResults.isLoading ? (
         <>
@@ -103,7 +98,10 @@ function App() {
       ) : searchResults.error ? (
         <p>{searchResults.error}</p>
       ) : searchResults.data.length === 0 && !isFirstSearch ? (
-        <p>No results found</p>
+        <p className='mt-4'>
+          No results found{' '}
+          {lastSearchedQuery.length > 0 ? `for “${lastSearchedQuery}”` : ''}
+        </p>
       ) : searchResults.data.length > 0 ? (
         <>
           <p className='mt-4' data-testid='showing-users-text'>
