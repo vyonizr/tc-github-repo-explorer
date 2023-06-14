@@ -106,7 +106,9 @@ function App() {
         <p>No results found</p>
       ) : searchResults.data.length > 0 ? (
         <>
-          <p className='mt-4'>Showing users for {`“${lastSearchedQuery}”`}</p>
+          <p className='mt-4' data-testid='showing-users-text'>
+            Showing users for {`“${lastSearchedQuery}”`}
+          </p>
           <ul className='mt-4 grid grid-flow-row gap-y-2'>
             {searchResults.data.map((user) => (
               <UserRow

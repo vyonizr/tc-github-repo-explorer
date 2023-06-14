@@ -1,6 +1,8 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import App from '../App'
 
+const DUMMY_USERNAME = 'linus'
+
 describe('Main page rendered properly', () => {
   beforeEach(() => {
     render(<App />)
@@ -36,11 +38,9 @@ describe('Integration Test', () => {
     const searchInput = screen.getByTestId('search-input')
     const searchButton = screen.getByTestId('search-button')
 
-    const username = 'linus'
+    fireEvent.change(searchInput, { target: { value: DUMMY_USERNAME } })
 
-    fireEvent.change(searchInput, { target: { value: username } })
-
-    expect(searchInput).toHaveValue(username)
+    expect(searchInput).toHaveValue(DUMMY_USERNAME)
     expect(searchButton).not.toBeDisabled()
   })
 
@@ -48,14 +48,13 @@ describe('Integration Test', () => {
     const searchInput = screen.getByTestId('search-input')
     const searchButton = screen.getByTestId('search-button')
 
-    const username = 'linus'
-
-    fireEvent.change(searchInput, { target: { value: username } })
+    fireEvent.change(searchInput, { target: { value: DUMMY_USERNAME } })
     fireEvent.click(searchButton)
     screen.getAllByTestId('user-shimmer')
 
     await waitFor(() => {
-      // expect(userShimmer).toBeInTheDocument()
+      const showingUsersText = screen.getByTestId('showing-users-text')
+      expect(showingUsersText).toBeInTheDocument()
     })
   })
 })
