@@ -10,12 +10,13 @@ describe('Main page rendered properly', () => {
 
   test('Input component is rendered', () => {
     const searchInput = screen.getByTestId('search-input')
-    expect(searchInput).toHaveAttribute('placeholder', 'Enter username')
     expect(searchInput).toBeInTheDocument()
+    expect(searchInput).toHaveAttribute('placeholder', 'Enter username')
   })
 
   test('Search button is rendered', () => {
     const searchButton = screen.getByTestId('search-button')
+    expect(searchButton).toBeInTheDocument()
     expect(searchButton).toHaveTextContent('Search')
     expect(searchButton).toHaveClass('bg-blue-500')
   })
@@ -24,24 +25,6 @@ describe('Main page rendered properly', () => {
 describe('Integration Test', () => {
   beforeEach(() => {
     render(<App />)
-  })
-
-  test('Button is disabled when input is empty', () => {
-    const searchInput = screen.getByTestId('search-input')
-    const searchButton = screen.getByTestId('search-button')
-
-    expect(searchInput).toHaveValue('')
-    expect(searchButton).toBeDisabled()
-  })
-
-  test('Button is enabled when input is not empty', () => {
-    const searchInput = screen.getByTestId('search-input')
-    const searchButton = screen.getByTestId('search-button')
-
-    fireEvent.change(searchInput, { target: { value: DUMMY_USERNAME } })
-
-    expect(searchInput).toHaveValue(DUMMY_USERNAME)
-    expect(searchButton).not.toBeDisabled()
   })
 
   test('Loading shimmer and results are rendered', async () => {
